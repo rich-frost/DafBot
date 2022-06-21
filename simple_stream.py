@@ -7,8 +7,8 @@ for grbl. When grbl has finished parsing the g-code block, it will
 return an 'ok' or 'error' response. When the planner buffer is full,
 grbl will not send a response until the planner buffer clears space.
 
-G02/03 arcs are special exceptions, where they inject short line 
-segments directly into the planner. So there may not be a response 
+G02/03 arcs are special exceptions, where they inject short line
+segments directly into the planner. So there may not be a response
 from grbl for the duration of the arc.
 
 ---------------------
@@ -36,31 +36,43 @@ THE SOFTWARE.
 ---------------------
 """
 
-import serial
 import time
 
+import serial
 # Open grbl serial port
-s = serial.Serial('/dev/cu.usbmodem1201',115200)
+from serial.tools import list_ports
+
+port = list(list_ports.comports())
+serstring = ''
+for p in port:
+
+    if '/dev/cu.usbmodem' in p.device:
+        serstring = p.device
+        break
+    else:
+        print('Skipping: ' + p.device)
+print('Connecting: ' + serstring)
+s = serial.Serial(serstring, 115200)
 
 # Open g-code file
-f = open('demo.gcode','r');
+f = open('demo.gcode', 'r')
 
 # Wake up grbl
 s.write("\r\n\r\n".encode())
-time.sleep(2)   # Wait for grbl to initialize 
+time.sleep(2)   # Wait for grbl to initialize
 s.flushInput()  # Flush startup text in serial input
 
 # Stream g-code to grbl
 for line in f:
-    l = line.strip() # Strip all EOL characters for consistency
+    l = line.strip()  # Strip all EOL characters for consistency
     print('Sending: ' + l,)
-    s.write((l + '\n').encode()) # Send g-code block to grbl
-    grbl_out = s.readline() # Wait for grbl response with carriage return
+    s.write((l + '\n').encode())  # Send g-code block to grbl
+    grbl_out = s.readline()  # Wait for grbl response with carriage return
     print(' : ' + grbl_out.strip().decode())
 
 # Wait here until grbl is finished to close serial port and file.
-input("  Press <Enter> to exit and disable grbl.") 
+input("  Press <Enter> to exit and disable grbl.")
 
 # Close file and serial port
 f.close()
-s.close()    
+s.close()
