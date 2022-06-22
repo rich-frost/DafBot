@@ -12,8 +12,13 @@ for p in port:
         break
     else:
         print('Skipping: ' + p.device)
-print('Connecting: ' + serstring)
-s = serial.Serial(serstring, 115200)
+if serstring =='':
+    print('No valid serial devices found')
+    print('EXITING')
+    quit()
+else:
+    print('Connecting: ' + serstring)
+    s = serial.Serial(serstring, 115200)
 
 # Wake up grbl
 s.write("\r\n\r\n".encode())
