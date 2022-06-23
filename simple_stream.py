@@ -56,8 +56,8 @@ def move(coord, speed):
     x = coord[0]
     y = coord[1]
     sleep = 0.01
-    l = 'G1 X{} Y{} F{}'.format(x, y, speed)
-    print('Sending: ' + l)
+    l = 'G1 X{:<3} Y{:<3} F{}'.format(x, y, speed)
+    print('sending: ' + l)
     s.write((l + '\n').encode())  # Send g-code block to grbl
     time.sleep(sleep)
     # Wait for grbl response with carriage return
@@ -91,4 +91,5 @@ while(exiting == 0):
     # time.sleep(2)
 print('homing before quiting!')
 move([0, 0], 5000)
+print('closing serial')
 s.close()
