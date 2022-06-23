@@ -84,7 +84,6 @@ while(exiting == 0):
     #     move(coord, 10000)
     coord = [random.randint(0, limits[0][1]), random.randint(0, limits[1][1])]
     move(coord, 10000)
-    # time.sleep(2)
 print('homing before quiting!')
 move([0, 0], 5000)
 print('closing serial')
