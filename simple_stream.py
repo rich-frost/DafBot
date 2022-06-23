@@ -21,12 +21,10 @@ if serstring == '':
 else:
     print('Connecting: ' + serstring)
     s = serial.Serial(serstring, 115200)
-
-# Wake up grbl
 s.write("\r\n\r\n".encode())
 print('Warming up')
-time.sleep(2)   # Wait for grbl to initialize
-s.flushInput()  # Flush startup text in serial input
+time.sleep(2)
+s.flushInput()
 limits = [[0, 385], [0, 400]]
 coords = [[385, 0],
           [385, 400],
@@ -38,7 +36,6 @@ coords = [[385, 0],
           [0, 0]]
 x = 0
 y = 0
-
 exiting = 0
 
 
@@ -85,7 +82,6 @@ def move(coord, speed):
 while(exiting == 0):
     # for coord in coords:
     #     move(coord, 10000)
-
     coord = [random.randint(0, limits[0][1]), random.randint(0, limits[1][1])]
     move(coord, 10000)
     # time.sleep(2)
