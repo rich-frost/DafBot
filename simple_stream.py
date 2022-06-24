@@ -37,7 +37,7 @@ coords = [[385, 0],
 x = 0
 y = 0
 exiting = 0
-
+stepspermm = (200*16)/(20*2)
 
 def handler(signum, frame):
     global exiting
@@ -50,6 +50,7 @@ signal.signal(signal.SIGINT, handler)
 
 
 def move(coord, speed):
+    global exiting
     x = coord[0]
     y = coord[1]
     sleep = 0.01
@@ -76,6 +77,8 @@ def move(coord, speed):
     else:
         print('ERROR!')
         print(' : ' + grbl_out)
+    # if exiting==0:
+    #     break
     time.sleep(sleep)
 
 
@@ -83,7 +86,7 @@ while(exiting == 0):
     # for coord in coords:
     #     move(coord, 10000)
     coord = [random.randint(0, limits[0][1]), random.randint(0, limits[1][1])]
-    move(coord, 10000)
+    move(coord, 11000)
 print('homing before quiting!')
 move([0, 0], 5000)
 print('closing serial')
