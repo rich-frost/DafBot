@@ -1,4 +1,4 @@
-#/usr/bin/env python3
+#!/usr/bin/env python3
 import random
 import signal
 import time
@@ -37,7 +37,8 @@ coords = [[385, 0],
 x = 0
 y = 0
 exiting = 0
-stepspermm = (200*16)/(20*2)
+stepspermm = (200 * 16) / (20 * 2)
+
 
 def handler(signum, frame):
     global exiting
