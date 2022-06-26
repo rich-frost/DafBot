@@ -8,12 +8,22 @@ import signal
 import sys
 import time
 
+import cv2
 import serial
 from serial.tools import list_ports
 
-port = list(list_ports.comports())
+# initialise camera
+cap = cv2.VideoCapture(1)
+width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+print(width, height)
+val, img = cap.read()
+cv2.imshow('my webcam', img)
+
+# initialise grbl serial
+ports = list(list_ports.comports())
 SETSTRING = ''
-for p in port:
+for p in ports:
     if '/dev/cu.usbmodem' not in p.device:
         print('Skipping: ' + p.device)
     else:
@@ -43,12 +53,13 @@ EXITING = 0
 STEPS_PER_MM = (200 * 16) / (20 * 2)
 
 
-def handler(signum, frame): # pylint: disable=W0613
+def handler(signum, frame):  # pylint: disable=W0613
     """
     This is the handler for SIGINT events sent by the user pressing ctrl-c.
     """
-    global EXITING # pylint: disable=W0603
+    global EXITING  # pylint: disable=W0603
     EXITING = 1
+    print('')
     print('Kill signal recieved')
 
 
@@ -94,7 +105,13 @@ while EXITING == 0:
     #     move(coord, 10000)
     coord = [random.randint(0, limits[0][1]), random.randint(0, limits[1][1])]
     move(coord, 11000)
+    val, img = cap.read()
+    # img = cv2.flip(img, -1)
+    cv2.imshow('my webcam', img)
+    if cv2.waitKey(1) == 27:
+        break  # esc to quit
 print('homing before quiting!')
 move([0, 0], 5000)
 print('closing serial')
 s.close()
+cv2.destroyAllWindows()
