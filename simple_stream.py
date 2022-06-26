@@ -12,46 +12,6 @@ import cv2
 import serial
 from serial.tools import list_ports
 
-# initialise camera
-cap = cv2.VideoCapture(1)
-width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-print(width, height)
-val, img = cap.read()
-cv2.imshow('my webcam', img)
-
-# initialise grbl serial
-ports = list(list_ports.comports())
-SETSTRING = ''
-for p in ports:
-    if '/dev/cu.usbmodem' not in p.device:
-        print('Skipping: ' + p.device)
-    else:
-        SERIAL_STRING = p.device
-        break
-if SERIAL_STRING == '':
-    print('No valid serial devices found')
-    print('EXITING')
-    sys.exit()
-else:
-    print('Connecting: ' + SERIAL_STRING)
-    s = serial.Serial(SERIAL_STRING, 115200)
-s.write("\r\n\r\n".encode())
-print('Warming up')
-time.sleep(2)
-s.flushInput()
-limits = [[0, 385], [0, 400]]
-coords = [[385, 0],
-          [385, 400],
-          [0, 400],
-          [0, 0],
-          [50, 0],
-          [50, 50],
-          [0, 50],
-          [0, 0]]
-EXITING = 0
-STEPS_PER_MM = (200 * 16) / (20 * 2)
-
 
 def handler(signum, frame):  # pylint: disable=W0613
     """
@@ -61,9 +21,6 @@ def handler(signum, frame):  # pylint: disable=W0613
     EXITING = 1
     print('')
     print('Kill signal recieved')
-
-
-signal.signal(signal.SIGINT, handler)
 
 
 def move(target_coordinate, speed):
@@ -100,10 +57,82 @@ def move(target_coordinate, speed):
     time.sleep(sleep)
 
 
+# initialise camera
+cap = cv2.VideoCapture(1)
+width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+# print(width, height)
+RESOLUTION = 2
+if RESOLUTION == 1:
+    cap.set(3, 640)
+    cap.set(4, 240)
+if RESOLUTION == 2:
+    cap.set(3, 1280)
+    cap.set(4, 480)
+if RESOLUTION == 3:
+    cap.set(3, 2560)
+    cap.set(4, 720)
+if RESOLUTION == 4:
+    cap.set(3, 2560)
+    cap.set(4, 960)
+print('Warming up - camera')
+X = 0
+while X < 100:
+    val, img = cap.read()
+    cv2.imshow('my webcam', img)
+    if cv2.waitKey(1) == 27:
+        break  # esc to quit
+    X = X + 1
+
+
+# initialise machine perameters
+MACHINE_LIMITS = [[0, 385],
+                  [0, 400]]
+MACHINE_DEMO = [[385, 0],
+                [385, 400],
+                [0, 400],
+                [0, 0],
+                [50, 0],
+                [50, 50],
+                [0, 50],
+                [0, 0]]
+MICROSTEPPING = 16
+STEPS_PER_REV = 200
+PULLEY_TEETH_NO = 20
+PULLEY_BELT_PITCH = 2
+STEPS_PER_MM = (STEPS_PER_REV * MICROSTEPPING) / \
+    (PULLEY_TEETH_NO * PULLEY_BELT_PITCH)
+
+# initialise grbl serial
+PORTS = list(list_ports.comports())
+SERIAL_STRING = ''
+for p in PORTS:
+    if '/dev/cu.usbmodem' not in p.device:
+        # print('Skipping: ' + p.device)
+        pass
+    else:
+        SERIAL_STRING = p.device
+        break
+if SERIAL_STRING == '':
+    print('No valid serial devices found')
+    print('EXITING')
+    sys.exit()
+else:
+    print('Connecting: ' + SERIAL_STRING)
+    s = serial.Serial(SERIAL_STRING, 115200)
+s.write("\r\n\r\n".encode())
+print('Warming up - grbl')
+time.sleep(2)
+s.flushInput()
+
+# initialise
+EXITING = 0
+signal.signal(signal.SIGINT, handler)
 while EXITING == 0:
     # for coord in coords:
     #     move(coord, 10000)
-    coord = [random.randint(0, limits[0][1]), random.randint(0, limits[1][1])]
+    coord = [random.randint(0, MACHINE_LIMITS[0][1]),
+             random.randint(0, MACHINE_LIMITS[1][1])]
     move(coord, 11000)
     val, img = cap.read()
     # img = cv2.flip(img, -1)
@@ -114,4 +143,6 @@ print('homing before quiting!')
 move([0, 0], 5000)
 print('closing serial')
 s.close()
+print('closing opencv')
+cap.release()
 cv2.destroyAllWindows()
