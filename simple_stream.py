@@ -43,14 +43,13 @@ EXITING = 0
 STEPS_PER_MM = (200 * 16) / (20 * 2)
 
 
-def handler():
+def handler(signum, frame): # pylint: disable=W0613
     """
     This is the handler for SIGINT events sent by the user pressing ctrl-c.
     """
-    global EXITING
-    # print('')
-    # print('exiting now')
+    global EXITING # pylint: disable=W0603
     EXITING = 1
+    print('Kill signal recieved')
 
 
 signal.signal(signal.SIGINT, handler)
