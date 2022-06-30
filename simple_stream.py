@@ -20,7 +20,7 @@ def handler(signum, frame):  # pylint: disable=W0613
     global EXITING  # pylint: disable=W0603
     EXITING = 1
     print('')
-    print('Kill signal recieved')
+    print('EXITING=1')
 
 
 def move(target_coordinate, speed):
@@ -58,7 +58,7 @@ def move(target_coordinate, speed):
 
 
 # initialise camera
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 # print(width, height)
@@ -131,14 +131,35 @@ signal.signal(signal.SIGINT, handler)
 while EXITING == 0:
     # for coord in coords:
     #     move(coord, 10000)
-    coord = [random.randint(0, MACHINE_LIMITS[0][1]),
-             random.randint(0, MACHINE_LIMITS[1][1])]
-    move(coord, 11000)
-    val, img = cap.read()
-    # img = cv2.flip(img, -1)
-    cv2.imshow('my webcam', img)
-    if cv2.waitKey(1) == 27:
-        break  # esc to quit
+    xlim = MACHINE_LIMITS[0][1]
+    ylim = MACHINE_LIMITS[1][1]
+    for y in range(5):
+        if EXITING == 1:
+            break
+        for x in range(5):
+            if EXITING == 1:
+                break
+            print(x, y)
+            move([(xlim/4)*x, (ylim/5)*y], 11000)
+            val, img = cap.read()
+            cv2.imshow('my webcam', img)
+            if cv2.waitKey(1) == 27:
+                break  # esc to quit
+
+    # coord = [random.randint(0, MACHINE_LIMITS[0][1]),
+    #          random.randint(0, MACHINE_LIMITS[1][1])]
+    # move(coord, 11000)
+
+    # val, img = cap.read()
+    # val, img = cap.read()
+    # val, img = cap.read()
+    # val, img = cap.read()
+    # val, img = cap.read()
+    # val, img = cap.read()
+    # # img = cv2.flip(img, -1)
+    # cv2.imshow('my webcam', img)
+    # if cv2.waitKey(1) == 27:
+    #     break  # esc to quit
 print('homing before quiting!')
 move([0, 0], 5000)
 print('closing serial')
