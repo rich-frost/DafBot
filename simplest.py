@@ -57,7 +57,7 @@ def move(target_coordinate, speed):
     time.sleep(sleep)
 
 # initialise machine perameters
-MACHINE_LIMITS = [[0, 385],
+MACHINE_LIMITS = [[0, 735],
                   [0, 400]]
 MACHINE_DEMO = [[385, 0],
                 [385, 400],
@@ -84,6 +84,7 @@ for p in PORTS:
     else:
         SERIAL_STRING = p.device
         break
+SERIAL_STRING = '/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_75735303931351A071E2-if00'
 if SERIAL_STRING == '':
     print('No valid serial devices found')
     print('EXITING')
@@ -100,18 +101,19 @@ s.flushInput()
 EXITING = 0
 signal.signal(signal.SIGINT, handler)
 while EXITING == 0:
-    # for coord in coords:
-    #     move(coord, 10000)
-    xlim = MACHINE_LIMITS[0][1]
-    ylim = MACHINE_LIMITS[1][1]
-    for y in range(5):
-        if EXITING == 1:
-            break
-        for x in range(5):
-            if EXITING == 1:
-                break
-            print(x, y)
-            move([(xlim/4)*x, (ylim/5)*y], 11000)
+    for coord in MACHINE_DEMO:
+        move(coord, 10000)
+
+    #xlim = MACHINE_LIMITS[0][1]
+    #ylim = MACHINE_LIMITS[1][1]
+    #for y in range(5):
+    #    if EXITING == 1:
+    #        break
+    #    for x in range(5):
+    #        if EXITING == 1:
+    #            break
+    #        print(x, y)
+    #        move([(xlim/4)*x, (ylim/5)*y], 11000)
 
 print('homing before quiting!')
 move([0, 0], 5000)
