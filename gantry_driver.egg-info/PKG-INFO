@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: gantry-driver
+Version: 0.1
+Summary: A package to act as the driver for grbl based gantry systems
+Home-page: 
+Author: Ben Green
+Author-email: ben@kernowrobotics.co.uk

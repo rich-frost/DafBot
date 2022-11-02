@@ -8,7 +8,6 @@ import signal
 import sys
 import time
 
-# import cv2
 import serial
 from serial.tools import list_ports
 
@@ -20,7 +19,6 @@ def handler(signum, frame):  # pylint: disable=W0613
     global EXITING  # pylint: disable=W0603
     EXITING = 1
     print('')
-    print('EXITING=1')
 
 
 def move(target_coordinate, speed):
@@ -35,8 +33,9 @@ def move(target_coordinate, speed):
     time.sleep(sleep)
     # Wait for grbl response with carriage return
     grbl_out = s.readline().strip().decode()
+    print(f'message recieved = {grbl_out}')
     if grbl_out == 'ok':
-        # print('moving')
+        print('moving')
         pass
     else:
         print(' : ' + grbl_out)
@@ -45,9 +44,10 @@ def move(target_coordinate, speed):
     s.write((next_gcode_line + '\n').encode())  # Send g-code block to grbl
     time.sleep(sleep)
     # Wait for grbl response with carriage return
+    print('waiting for completion')
     grbl_out = s.readline().strip().decode()
     if grbl_out == 'ok':
-        # print('Done :)')
+        print('Done :)')
         pass
     else:
         print('ERROR!')
@@ -55,35 +55,6 @@ def move(target_coordinate, speed):
     # if exiting==0:
     #     break
     time.sleep(sleep)
-
-
-# # initialise camera
-# cap = cv2.VideoCapture(0)
-# width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-# height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-# # print(width, height)
-# RESOLUTION = 2
-# if RESOLUTION == 1:
-#     cap.set(3, 640)
-#     cap.set(4, 240)
-# if RESOLUTION == 2:
-#     cap.set(3, 1280)
-#     cap.set(4, 480)
-# if RESOLUTION == 3:
-#     cap.set(3, 2560)
-#     cap.set(4, 720)
-# if RESOLUTION == 4:
-#     cap.set(3, 2560)
-#     cap.set(4, 960)
-# print('Warming up - camera')
-# X = 0
-# while X < 100:
-#     val, img = cap.read()
-#     cv2.imshow('my webcam', img)
-#     if cv2.waitKey(1) == 27:
-#         break  # esc to quit
-#     X = X + 1
-
 
 # initialise machine perameters
 MACHINE_LIMITS = [[0, 385],
@@ -141,29 +112,8 @@ while EXITING == 0:
                 break
             print(x, y)
             move([(xlim/4)*x, (ylim/5)*y], 11000)
-            # val, img = cap.read()
-            # cv2.imshow('my webcam', img)
-            # if cv2.waitKey(1) == 27:
-            #     break  # esc to quit
 
-    # coord = [random.randint(0, MACHINE_LIMITS[0][1]),
-    #          random.randint(0, MACHINE_LIMITS[1][1])]
-    # move(coord, 11000)
-
-    # val, img = cap.read()
-    # val, img = cap.read()
-    # val, img = cap.read()
-    # val, img = cap.read()
-    # val, img = cap.read()
-    # val, img = cap.read()
-    # # img = cv2.flip(img, -1)
-    # cv2.imshow('my webcam', img)
-    # if cv2.waitKey(1) == 27:
-    #     break  # esc to quit
 print('homing before quiting!')
 move([0, 0], 5000)
 print('closing serial')
 s.close()
-# print('closing opencv')
-# cap.release()
-# cv2.destroyAllWindows()
