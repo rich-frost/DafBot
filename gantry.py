@@ -39,8 +39,22 @@ class Gantry(object):
             print('Warming up - grbl')
             time.sleep(2)
             self.s.flushInput()
+            
+        self.send_command('$1=255')
         self.send_command('$22=1')
         self.send_command('$23=3')
+        self.send_command('$24=1000')
+        self.send_command('$25=5000')
+        self.send_command('$27=10')
+        self.send_command(f'$100={self.STEPS_PER_MM_XY}')
+        self.send_command(f'$101={self.STEPS_PER_MM_XY}')
+        self.send_command(f'$102={self.STEPS_PER_MM_Z}')
+        self.send_command('$110=8000')
+        self.send_command('$111=8000')
+        self.send_command('$112=8000')
+        self.send_command('$120=200')
+        self.send_command('$121=200')
+        self.send_command('$122=200')
 
 
     def handler(self, signum, frame):  # pylint: disable=W0613
@@ -52,7 +66,7 @@ class Gantry(object):
         self.exiting = 1
         sys.exit()
 
-    def move_new(self, target_coordinate, speed):
+    def move(self, target_coordinate, speed):
         self.s.flushInput()
         time.sleep(0.01)
         next_gcode_line = f'G1 X{target_coordinate[0]} Y{target_coordinate[1]} Z{target_coordinate[2]} F{speed}'
@@ -61,42 +75,6 @@ class Gantry(object):
         time.sleep(0.01)
         self.wait_until_finished()
         time.sleep(0.01)
-
-
-    def move(self, target_coordinate, speed):
-        """
-        This function is responsible for driving the gantry to the desired position
-        and stalling the code function until that position is reached.
-        """
-        sleep = 0.01
-        next_gcode_line = f'G1 X{target_coordinate[0]} Y{target_coordinate[1]} Z{target_coordinate[2]} F{speed}'
-        print('sending: ' + next_gcode_line)
-        self.s.write((next_gcode_line + '\n').encode())  # Send g-code block to grbl
-        time.sleep(sleep)
-        # Wait for grbl response with carriage return
-        grbl_out = self.s.readline().strip().decode()
-        print(f'message recieved = {grbl_out}')
-        if grbl_out == 'ok':
-            print('moving')
-            pass
-        else:
-            print(' : ' + grbl_out)
-        time.sleep(sleep)
-        next_gcode_line = 'G4 P0'
-        self.s.write((next_gcode_line + '\n').encode())  # Send g-code block to grbl
-        time.sleep(sleep)
-        # Wait for grbl response with carriage return
-        print('waiting for completion')
-        grbl_out = self.s.readline().strip().decode()
-        if grbl_out == 'ok':
-            print('Done :)')
-            pass
-        else:
-            print('ERROR!')
-            print(' : ' + grbl_out)
-        # if exiting==0:
-        #     break
-        time.sleep(sleep)
 
 
     def send_command(self, command = '', verbose=''):
@@ -119,46 +97,20 @@ class Gantry(object):
 
 
     def wait_until_finished(self):
-        print('waiting for completion')
+        # print('waiting for completion')
         self.send_command('G4 P0')
 
-    def homex(self):
-        """
-        This function is responsible for driving the gantry to the desired position
-        and stalling the code function until that position is reached.
-        """
-        sleep = 0.01
-        next_gcode_line = 'G28 X0'
-        print('sending: ' + next_gcode_line)
-        self.s.write((next_gcode_line + '\n').encode())  # Send g-code block to grbl
-        time.sleep(sleep)
-        # Wait for grbl response with carriage return
-        grbl_out = self.s.readline().strip().decode()
-        print(f'message recieved = {grbl_out}')
-        if grbl_out == 'ok':
-            print('moving')
-            pass
-        else:
-            print(' : ' + grbl_out)
-        time.sleep(sleep)
+    def home_x(self):
+        self.send_command('$HX', 1)
+        self.wait_until_finished()
 
+    def home_y(self):
+        self.send_command('$HY', 1)
+        self.wait_until_finished()
 
-        next_gcode_line = 'G4 P0'
-        self.s.write((next_gcode_line + '\n').encode())  # Send g-code block to grbl
-        time.sleep(sleep)
-        # Wait for grbl response with carriage return
-        print('waiting for completion')
-        grbl_out = self.s.readline().strip().decode()
-        if grbl_out == 'ok':
-            print('Done :)')
-            pass
-        else:
-            print('ERROR!')
-            print(' : ' + grbl_out)
-        # if exiting==0:
-        #     break
-        time.sleep(sleep)
-
+    def home_z(self):
+        self.send_command('$HZ', 1)
+        self.wait_until_finished()
 
 if __name__ == '__main__':
     print('Please do not run this code directly. See example-move.py')
