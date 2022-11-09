@@ -6,7 +6,7 @@ Find and pickup yellow daffodil using the Gantry System
 
 # SETUP
 
-><ol>
+<ol>
     <li>1) Install Python 3.11.0 from https://www.python.org/downloads/release/python-3110/ the download links will be at the bottom of the page, download 32-bit or 64-bit dependent on your machine.</li>
     <li>2) We recommend using visual studio code to manage the code in the project, this can be downloaded from https://code.visualstudio.com/ </li>
     <li>3) Install the python extension for Visual Studio Code, this can be done by clicking on the three blocks on the left side bar inside visual studio and searching for python, it will be the first one on the list which has the microsoft blue tick under it.</li>
