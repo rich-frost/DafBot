@@ -100,6 +100,11 @@ class Gantry(object):
         # print('waiting for completion')
         self.send_command('G4 P0')
 
+    def home_all(self):
+        self.send_command('$H', 1)
+        self.wait_until_finished()
+        self.send_command('G92 X0 Y0 Z0')
+
     def home_x(self):
         self.send_command('$HX', 1)
         self.wait_until_finished()
@@ -111,6 +116,19 @@ class Gantry(object):
     def home_z(self):
         self.send_command('$HZ', 1)
         self.wait_until_finished()
+
+    def gripper_open(self):
+        self.set_gripper(0)
+        time.sleep(1)
+    
+    def gripper_close(self):
+        self.set_gripper(1000) 
+        time.sleep(1)   
+
+    def set_gripper(self, closedness):
+        if (closedness <= 1000) and (closedness >= 0):
+            self.send_command(f'M3 S{closedness}')
+
 
 if __name__ == '__main__':
     print('Please do not run this code directly. See example-move.py')
