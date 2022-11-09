@@ -12,6 +12,20 @@ elif sys.platform == "darwin":
 elif sys.platform == "win32":
     system = 'windows'
 
+def FindCOMPort():
+    # Assigns COM port if on a windows machine
+    if sys.platform == "win32":
+        ports = list(serial.tools.list_ports.comports())
+        for p in ports:
+            if "Arduino" in str(p):
+                return str(p)
+            else:
+                print("Arduino Not Attached")
+                quit()
+
+    # Assigns the COM port if on a linux machine
+    if sys.platform.startswith("linux"):
+        return '/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_75735303931351A071E2-if00'
 
 class Gantry(object):
     def __init__(self, serialString = ''):
