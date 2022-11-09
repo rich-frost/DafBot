@@ -4,7 +4,6 @@ import time
 import sys
 
 dafBot = Gantry(FCOM())
-
 # Sets home position for all Vectors, assigns 0,0,0
 dafBot.home_all()
 

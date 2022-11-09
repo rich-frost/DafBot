@@ -2,17 +2,7 @@
 
 This is the gantry task for the 11/11/2022 to 12/11/2022 Falmouth Hackathon, the gantry system must complete a series of actions listed below:
 
-1) The Gantry Camera feed must be imported into python to be manipulated and read.
-
-2) The Gantry Camera must look out for the yellow tip of a faux(fake) daffodil head using some written code.
-
-3) The Gantry Carriage(the center bit of the gantry system) must then move to hover over the yellow tip of the faux daffodil.
-
-4) The Gantry Head/Gripper (the bit at the end of the Gantry Carriage) must then be lowered to the height of the Daffodil and grip onto it
-
-5) The Gantry Head must then be raised and the gantry must return to the origin point and drop the daffodil in a bucket.
-
-6) Repeat
+Find and pickup yellow daffodil using the Gantry System
 
 --- SETUP ---
 
@@ -30,14 +20,17 @@ This is the gantry task for the 11/11/2022 to 12/11/2022 Falmouth Hackathon, the
 
 We have written a library to help you complete these tasks called "gantry.py" which contains several functions to move the gantry.
 The library contains an object called "Gantry" and for this example "Gantry" is being assigned to dafBot.
-For a good example of how all these functions work look at example-move.py as it is a pre written example of the code.
+For a good example of how all these functions work look at "example-move.py" as it is a pre written example of the code.
 
 > dafBot = Gantry(FCOM()) - This searches avaliable COM ports on your pc and looks for the one with an arduino attached and then sets up an object called dafBot which is assigned to that COM port.
+***IMPORTANT: this works (as far as I am aware) for all windows and linux PCs but has been untested on macs***
 
-> dafBot.home_all() - This should be called before running any other code as it allows the Gantry to find a home position to work from  ,      essentially it finds 0,0. There is individual home x,y,z however its easier to just home all to find 0,0
+> dafBot.home_all() - This should be called before running any other code as it allows the Gantry to find a home position to work from, essentially it finds 0,0. There is individual home x,y,z however its easier to just home all to find 0,0
 ***IMPORTANT: this should not be used to return to [0,0,0], only to set [0,0,0] as it is not efficient and uses unessasary components***
 
 > dafBot.move([X,Y,Z],SPEED) - Moves the Gantry Head to a specific x,y,z coordinate 
 ***IMPORTANT: the ranges of the head are: X = 0 to 730, Y = 0 to 440, Z = 0 to -240, we also reccomend not turning the speed above 11000***
 
-> dafBot.gripper_open()
+> dafBot.gripper_open() - Opens the gripper using the servos, has a 1 second delay after it opens to ensure it is fully open and working.
+
+> dafBot.gripper_close() - Closes the gripper, exact oppisite of "gripper_open"

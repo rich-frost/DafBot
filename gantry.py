@@ -3,6 +3,7 @@ import os
 import sys
 import time
 import serial
+import serial.tools.list_ports
 
 # Determine OS
 if sys.platform.startswith("linux"):
@@ -18,7 +19,8 @@ def FindCOMPort():
         ports = list(serial.tools.list_ports.comports())
         for p in ports:
             if "Arduino" in str(p):
-                return str(p)
+                liststr = str(p).split("-")
+                return liststr[0]
             else:
                 print("Arduino Not Attached")
                 quit()
