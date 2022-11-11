@@ -1,5 +1,5 @@
-# README
-## TASK
+# HACKATHON CHALLENGE - PICKING
+## The Challenge
 
 This is the gantry task for the 11/11/2022 to 12/11/2022 Falmouth Hackathon, the gantry system must complete a series of actions listed below:
 
@@ -7,7 +7,7 @@ Find and pickup faux yellow daffodils using the Gantry System and return them to
 
 The Faux Daffodils; you only want to pick up the bright green ones in the middle:
 
-![The Faux Yellow Daffodils](Example.jpg)
+![The Faux Daffodils](Example.jpg)
 
 ## SETUP
 
