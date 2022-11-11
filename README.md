@@ -23,7 +23,7 @@ We have written a library to help you complete these tasks called "gantry.py" wh
 The library contains an object called "Gantry" and for this example "Gantry" is being assigned to dafBot.
 For a good example of how all these functions work look at "example-move.py" as it is a pre written example of the code.
 
-> dafBot = Gantry(FCOM()) - This searches avaliable COM ports on your pc and looks for the one with an arduino attached and then sets up an object called dafBot which is assigned to that COM port.
+> dafBot = Gantry(FCOM()) - This searches available COM ports on your pc and looks for the one with an arduino attached and then sets up an object called dafBot which is assigned to that COM port.
 ***IMPORTANT: this works (as far as I am aware) for all windows and linux PCs but has been untested on macs***
 
 > dafBot.home_all() - This should be called before running any other code as it allows the Gantry to find a home position to work from, essentially it finds 0,0. There is individual home x,y,z however its easier to just home all to find 0,0
@@ -34,6 +34,6 @@ For a good example of how all these functions work look at "example-move.py" as 
 
 > dafBot.gripper_open() - Opens the gripper using the servos, has a 1 second delay after it opens to ensure it is fully open and working.
 
-> dafBot.gripper_close() - Closes the gripper, exact oppisite of "gripper_open"
+> dafBot.gripper_close() - Closes the gripper, exact opposite of "gripper_open"
 
 - Kernow Robotics.
