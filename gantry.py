@@ -85,6 +85,18 @@ class Gantry(object):
     def move(self, target_coordinate, speed):
         self.s.flushInput()
         time.sleep(0.01)
+        if target_coordinate[0] > 730:
+            target_coordinate[0] = 730
+        elif target_coordinate[0] < 0:
+            target_coordinate[0] = 0
+        if target_coordinate[1] > 440:
+            target_coordinate[1] = 440
+        elif target_coordinate[1] < 0:
+            target_coordinate[1] = 0
+        if target_coordinate[2] < -235:
+            target_coordinate[2] = -235
+        elif target_coordinate[0] > 0:
+            target_coordinate[0] = 0
         next_gcode_line = f'G1 X{target_coordinate[0]} Y{target_coordinate[1]} Z{target_coordinate[2]} F{speed}'
         time.sleep(0.01)
         self.send_command(next_gcode_line, 1)
@@ -116,10 +128,13 @@ class Gantry(object):
         # print('waiting for completion')
         self.send_command('G4 P0')
 
+    def set_current_position_as_home(self):
+        self.send_command('G92 X0 Y0 Z0')
+
     def home_all(self):
         self.send_command('$H', 1)
         self.wait_until_finished()
-        self.send_command('G92 X0 Y0 Z0')
+        self.set_current_position_as_home()
 
     def home_x(self):
         self.send_command('$HX', 1)
