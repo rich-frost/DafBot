@@ -1,11 +1,5 @@
 # HACKATHON CHALLENGE - PICKING
-## The Challenge
-
-This is the gantry task for the 11/11/2022 to 12/11/2022 Falmouth Hackathon, the gantry system must complete a series of actions listed below:
-
-Find and pickup faux yellow daffodils using the Gantry System and return them to a basket.
-
-The Faux Daffodils; you only want to pick up the bright green ones in the middle:
+One of the biggest challenges in automating daffodil picking is to identify the location and maturity of the daffodils. We have built a gantry system complete with three degrees of motion, gripper and camera for you to use on this challenge. Using the targeting camera and machine vision techniques, your system should be able to locate and move towards the targeted stem, close the gripper to grasp the stem, and finally deposit the collected stem into the basket mounted to the side of the robot. When ten stems have been collected the task is complete. Happy Coding!
 
 ![The Faux Daffodils](Example.jpg)
 
